@@ -62,72 +62,156 @@ class _CharacterDetailsState extends State<CharacterDetails> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: [
-              _CharacterImage(
-                widget: widget,
+        child: Column(
+          children: [
+            _detailsWidget(context),
+            const Divider(
+              thickness: 2.5,
+              color: Colors.black,
+            ),
+            SizedBox(
+              height: 30,
+              child: Text(
+                "Episode(s) of the character.",
+                textAlign: TextAlign.start,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w500),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 150,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(widget.characterModel.gender ?? ""),
-                    Text(widget.characterModel.status ?? ""),
-                    Text(
-                      widget.characterModel.origin?.name ?? "",
-                      textAlign: TextAlign.center,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _episodeModelList?.length ?? 0,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    elevation: 5,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.deepOrangeAccent,
+                        child: Text(
+                          _episodeModelList?[index].id.toString() ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      trailing: Text(
+                        _episodeModelList?[index].episode ?? "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.w300),
+                      ),
+                      title: Text(
+                        _episodeModelList?[index].name ?? "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        _episodeModelList?[index].airDate ?? "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Colors.black54),
+                      ),
                     ),
-                    Text(widget.characterModel.gender ?? "")
-                  ],
-                ),
+                  );
+                },
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              isLoading
-                  ? const CircularProgressIndicator.adaptive()
-                  : _CharacterAppearsInEpisode(
-                      episodeModelList: _episodeModelList),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class _CharacterAppearsInEpisode extends StatelessWidget {
-  const _CharacterAppearsInEpisode({
-    required List<EpisodeModel>? episodeModelList,
-  }) : _episodeModelList = episodeModelList;
-
-  final List<EpisodeModel>? _episodeModelList;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: GridView.builder(
-        scrollDirection: Axis.horizontal,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+  Row _detailsWidget(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _CharacterImage(
+            widget: widget,
+          ),
         ),
-        itemCount: _episodeModelList?.length ?? 0,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-              elevation: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+        Expanded(
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Text(_episodeModelList?[index].episode ?? ""),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  _detailsCustomWidget(context, "assets/icons/gender.png",
+                      "Gender", widget.characterModel.gender ?? ""),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  _detailsCustomWidget(context, "assets/icons/pulse-line.png",
+                      "Status", widget.characterModel.status ?? "")
                 ],
-              ));
-        },
+              ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  _detailsCustomWidget(
+                      context,
+                      "assets/icons/home.png",
+                      "Origin",
+                      widget.characterModel.origin?.name?.split(" ").first ??
+                          ""),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  _detailsCustomWidget(
+                      context,
+                      "assets/icons/location.png",
+                      "Location",
+                      widget.characterModel.location?.name?.split(" ").first ??
+                          "")
+                ],
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  SizedBox _detailsCustomWidget(BuildContext context, String iconString,
+      String detailName, String detailInfo) {
+    return SizedBox(
+      height: 100,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Card(
+            elevation: 5,
+            child: Image.asset(
+              iconString,
+              height: 30,
+            ),
+          ),
+          Text(
+            detailName,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.deepOrangeAccent,
+                fontWeight: FontWeight.w800,
+                fontSize: 16),
+          ),
+          Text(
+            detailInfo,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 12),
+          )
+        ],
       ),
     );
   }
@@ -144,10 +228,10 @@ class _CharacterImage extends StatelessWidget {
     return Hero(
       tag: widget.characterModel.name ?? "",
       child: Container(
-        height: 150,
-        width: 150,
+        height: 190,
+        width: 190,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
             image: DecorationImage(
                 image: NetworkImage(widget.characterModel.image ?? ""))),
       ),

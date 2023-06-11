@@ -141,7 +141,9 @@ class _HomePageState extends State<HomePage> {
                                       gender: _exampleCharacters?[index].gender,
                                       origin: _exampleCharacters?[index].origin,
                                       episode:
-                                          _exampleCharacters?[index].episode),
+                                          _exampleCharacters?[index].episode,
+                                      location:
+                                          _exampleCharacters?[index].location),
                                 ),
                               ));
                             },
@@ -169,7 +171,9 @@ class _HomePageState extends State<HomePage> {
                                       gender: filterCharacterList[index].gender,
                                       origin: filterCharacterList[index].origin,
                                       episode:
-                                          filterCharacterList[index].episode),
+                                          filterCharacterList[index].episode,
+                                      location:
+                                          filterCharacterList[index].location),
                                 ),
                               ));
                             },
